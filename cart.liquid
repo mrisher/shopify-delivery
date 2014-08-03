@@ -1,0 +1,195 @@
+<div id="cart">
+  
+  <!-- Begin empty cart -->
+  {% if cart.item_count == 0 %}
+  <div class="row">
+    <div class="span12 expanded-message">
+      <h2>Your cart is empty</h2>
+    </div>
+  </div>
+  <!-- End empty cart -->
+  
+  <!-- Begin cart -->
+  {% else %}
+  <div class="row">
+    <div class="span12">
+      <h1>Your cart</h1>
+
+      <form action="/cart" method="post" id="cartform">
+        <table>
+          <thead>
+            <tr>
+              <th class="image">&nbsp;</th>
+              <th class="item">&nbsp;</th>
+              <th class="qty">Quantity</th>
+              <th class="price">Price</th>
+              <th class="remove">&nbsp;</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for item in cart.items %}
+            <tr>
+              <td class="image">
+                <div class="product_image">
+                  <a href="{{ item.product.url }}">
+                    <img src="{{ item.product.featured_image | product_img_url: 'small' }}"  alt="{{ item.product.title }}" />
+                  </a>
+                </div>
+              </td>
+              <td class="item">
+                <a href="{{item.product.url }}">
+                  <strong>{{ item.product.title }}</strong>
+                  {% if item.product.variants.size > 1 %}
+                  <span class="variant_title">{{ item.variant.title }}</span>
+                  {% endif %}
+                </a>
+              </td>
+              <td class="qty">
+                <input type="text" size="4" name="updates[]" id="updates_{{ item.id }}" value="{{ item.quantity }}" onfocus="this.select();" class="tc item-quantity" />
+              </td>
+              <td class="price">{{ item.line_price | money }}</td>
+              <td class="remove"><a href="/cart/change?line={{ forloop.index }}&quantity=0" class="cart">Remove</a></td>
+            </tr>
+            {% endfor %}
+            <tr class="summary">
+              <td class="image">&nbsp;</td>
+              <td>&nbsp;</td>
+              <td>&nbsp;</td>
+              <td class="price"><span class="total"><strong>{{ cart.total_price | money }}</strong></span></td>
+              <td>&nbsp;</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="group clearfix">
+          <h3>Delivery/Pickup Option</h3>
+            <p class="sst">
+              <!-- Date calculation -->
+              {% include "delivery-windows" %}
+              <ul style="list-style-type:none;line-height:27px">
+                  <li><input checked type='radio' id='region_SF' class='region_radio' name='attributes[region]' value='San Francisco' style="-webkit-appearance:radio;margin-right:.5em"> San Francisco - 
+                    <select name='attributes[delivery_date]' id="delivery_date_sf" class="delivery_window_selector"></select></li>
+                  <li><input type='radio' id='region_PE' class='region_radio' name='attributes[region]' value='Peninsula' style="-webkit-appearance:radio;margin-right:.5em"> Peninsula - 
+                    <select name='attributes[delivery_date]' id="delivery_date_pe" class="delivery_window_selector" disabled></select></li>
+                  <li><input type='radio' id='region_BO' class='region_radio' name='attributes[region]' value='Berkeley/Oakland' style="-webkit-appearance:radio;margin-right:.5em"> Berkeley/Oakland - 
+                    <select name='attributes[delivery_date]' id="delivery_date_bo" class="delivery_window_selector" disabled></select></li>
+                <!-- 
+                <li><input type='radio' id='pickup' class='region_radio' name='attributes[region]' value='Local Pickup' style="-webkit-appearance:radio;margin-right:.5em"> Free Local Pickup - 
+                    <select name='attributes[delivery_date]' id="delivery_date_pickup" class="delivery_window_selector" disabled></select></li>
+                -->             
+	          </ul>
+              <script type="text/javascript">makeOptions(getWindows("SF"), $('#delivery_date_sf')); </script>
+              <script type="text/javascript">makeOptions(getWindows("PE"), $('#delivery_date_pe')); </script>
+              <script type="text/javascript">makeOptions(getWindows("BO"), $('#delivery_date_bo')); </script>
+             <!-- <script type="text/javascript">makeOptions(getWindows("pickup"), $('#delivery_date_pickup')); </script> -->
+            </p>
+        </div>
+      
+      <script type="text/javascript">testWindows();</script>
+        <div class="buttons clearfix">
+          <input type="button" id="checkout" class="btn" name="checkout" value="Checkout" />
+          <input type="submit" id="update-cart" class="btn" name="update" value="Update" />
+        </div>
+        
+        <script type="text/javascript">
+        $('#checkout').click(function (event) {
+            var variantIds = {
+                'region_SF': {
+                    'variant_id': 578896077,
+                    min_order: 1000
+                },
+                'region_PE': {
+                    'variant_id': 578896309,
+                    min_order: 1000
+                },
+                'region_BO': {
+                    'variant_id': 578896445,
+                    min_order: 1000
+                }
+            };
+          
+            var regionCode = $('input[name="attributes[region]"]:checked', '#cartform').attr('id');
+
+          // for standard regions:
+          // 1. fetch the variant
+          // 2. check the minimum order price
+          // 3. add variant to cart using AJAX API (http://mayert-douglas4935.myshopify.com/pages/api)
+          	if (regionCode != "pickup") {
+              var minimumOrder = variantIds[regionCode].min_order;
+              var orderSubtotal = {{ cart.total_price }};
+              if (orderSubtotal < minimumOrder) {
+                  alert("Sorry, there is a minimum order of " + Shopify.formatMoney(minimumOrder) + " for deliveries to " + 
+                       $('#' + regionCode).val());
+                  return;
+              }
+              var variantId = variantIds[regionCode].variant_id;
+              Shopify.addItem(variantId, 1, function (line_item) {
+                  console.log("added shipping:" + line_item);
+                  $('#cartform').prepend("<input type='hidden' name='updates[]' value='1'>");
+                  $('#cartform').append("<input type='hidden' name='checkout' value='Checkout'>");
+                  $('#cartform').submit();
+              });
+        	}
+            else { // for PICKUP, add variant based on selected item's TITLE attribute
+              var variantId = $('#delivery_date_pickup option:selected').attr('id');
+          		$('#pickup').val($('#delivery_date_pickup option:selected').text());
+              Shopify.addItem(variantId, 1, function (line_item) {
+                  console.log("added local pickup:" + line_item);
+                  $('#cartform').prepend("<input type='hidden' name='updates[]' value='1'>");
+                  $('#cartform').append("<input type='hidden' name='checkout' value='Checkout'>");
+                  $('#cartform').submit();
+
+          });
+           }
+        });
+          
+          // disable the drop downs for unselected region
+          $('.region_radio:radio').change(function() {
+            // set the select next to the checked radio button to ENABLED
+            $(".region_radio:checked").parent().find("select").removeAttr('disabled');
+            
+            // set the other ones to DISABLED
+            $(".region_radio:not(:checked)").parent().find("select").attr('disabled','disabled');
+          });
+		</script>
+
+      
+        {% if settings.display_extra_checkout_buttons or settings.display_cart_note %}
+        <div class="row">
+          {% if settings.display_extra_checkout_buttons %}
+          <div class="extra-checkout-buttons span6">
+            {% if additional_checkout_buttons %}
+            {{ content_for_additional_checkout_buttons }}
+            {% endif %}
+          </div>
+          {% endif %}
+          {% if settings.display_cart_note %}
+          <div class="span6">
+            <div class="checkout-buttons clearfix">
+              <label for="note">Add special instructions for your order...</label>
+              <textarea id="note" name="note" rows="10" cols="50">{{ cart.note }}</textarea>
+            </div>
+          </div>
+          {% endif %}
+        </div> 
+        {% endif %}
+        {% endif %}
+
+
+      </form>
+    </div>
+
+    {% if cart.item_count == 0 and settings.featured_products and settings.featured_products != '' and collections[settings.featured_products].handle == settings.featured_products and collections[settings.featured_products].products_count > 0 %}
+    <div class="cart-featured">
+      <h3 class="featured-cart-title">Featured Items</h3>
+      {% for product in collections[settings.featured_products].products limit: 4 %}
+	      {% include 'product-loop' %}
+  	  {% endfor %}
+    </div>
+    {% endif %}
+
+  </div>
+  <!-- End cart -->
+</div> 
+ 
+
