@@ -1,4 +1,4 @@
-< script type = "text/javascript" >
+<script type="text/javascript">
 // Defines the cutoff windows
 // @cutoff_dow: the day-of-week beyond which this window is not available (Sun=0;Sat=6)
 // @cutoff_hour: the last hour of cutoff_dow when users can qualify for this window
@@ -34,7 +34,7 @@ var DeliveryWindows = {
 		'hours': '9-11 AM',
 		'price': '$4.99'
 	}],
-	"BO": [{
+	"EB": [{
 		'cutoff_dow': 3,
 		'cutoff_hour': 21,
 		'dow': 5,
@@ -66,7 +66,7 @@ var DeliveryWindows = {
 // getWindows(referenceTime) -- returns a list of dates and delivery windows
 // whose cutoff times have not yet passed
 //
-// @region: One of {SF, PE, BO} as defined in the global DeliveryWindows variable;
+// @region: One of {SF, PE, EB} as defined in the global DeliveryWindows variable;
 // @referenceDate: (optional) an XDate representing when to begin the search
 //
 // @returns: an array of {date, delivery_time} objects
@@ -170,4 +170,4 @@ function testWindows() {
 
 
 
-< /script>
+</script>
