@@ -1,43 +1,80 @@
-<script type="text/javascript">
-  // Defines the cutoff windows
-  // @cutoff_dow: the day-of-week beyond which this window is not available (Sun=0;Sat=6)
-  // @cutoff_hour: the last hour of cutoff_dow when users can qualify for this window
-  // @dow: the day-of-week for the delivery (0=sunday, 6=saturday)
-  // @hours: the hours of the delivery window on `dow`
-  // @price: the price for delivery during that window
-  // NB: list *must* be in ascending order by cutoff day/hour, and may not work if 
-  // cutoff and delivery span across the 6-0 boundary (i.e. the modular arithmetic)
+< script type = "text/javascript" >
+// Defines the cutoff windows
+// @cutoff_dow: the day-of-week beyond which this window is not available (Sun=0;Sat=6)
+// @cutoff_hour: the last hour of cutoff_dow when users can qualify for this window
+// @dow: the day-of-week for the delivery (0=sunday, 6=saturday)
+// @hours: the hours of the delivery window on `dow`
+// @price: the price for delivery during that window
+// NB: list *must* be in ascending order by cutoff day/hour, and may not work if 
+// cutoff and delivery span across the 6-0 boundary (i.e. the modular arithmetic)
 var DeliveryWindows = {
-  "SF":	[
-    {'cutoff_dow': 0, 'cutoff_hour':21, 'dow':1, 'hours':'6-8 PM', 'price':'$4.99'},    		
-    {'cutoff_dow': 0, 'cutoff_hour':21, 'dow':2, 'hours': '9-11 AM', 'price':'$4.99'},    		
-    {'cutoff_dow': 3, 'cutoff_hour':21, 'dow':5, 'hours': '9-11 AM', 'price':'$4.99'}
-  ],    
-  "PE":	[
-    {'cutoff_dow': 0, 'cutoff_hour':21, 'dow':2, 'hours':'9-11 AM', 'price':'$4.99'},
-  {'cutoff_dow': 3, 'cutoff_hour':21, 'dow':5, 'hours':'9-11 AM', 'price':'$4.99'}
-  ],    
-  "BO":	[
-  {'cutoff_dow': 0, 'cutoff_hour':21, 'dow':2, 'hours':'9-11 AM', 'price':'$4.99'},
-  {'cutoff_dow': 3, 'cutoff_hour':21, 'dow':5, 'hours':'9-11 AM', 'price':'$4.99'}
-  ],    
-  "pickup": [
-    {'cutoff_dow': 2, 'cutoff_hour':9, 'dow':3, 'hours':'3-7 PM', 'price':'Free', 'product': 327399525, 'variant': 787566377, 'title':'Upper Haight Farmers Market'},            
-    {'cutoff_dow': 5, 'cutoff_hour':9, 'dow':6, 'hours':'8 AM-Noon', 'price':'Free', 'product': 327399525, 'variant': 787566381, 'title':'Downtown Palo Alto Farmers Market'}
-  ]
+	"SF": [{
+		'cutoff_dow': 0,
+		'cutoff_hour': 21,
+		'dow': 1,
+		'hours': '6-8 PM',
+		'price': '$4.99'
+	}, {
+		'cutoff_dow': 0,
+		'cutoff_hour': 21,
+		'dow': 2,
+		'hours': '9-11 AM',
+		'price': '$4.99'
+	}, {
+		'cutoff_dow': 3,
+		'cutoff_hour': 21,
+		'dow': 5,
+		'hours': '9-11 AM',
+		'price': '$4.99'
+	}],
+	"PE": [{
+		'cutoff_dow': 0,
+		'cutoff_hour': 21,
+		'dow': 2,
+		'hours': '9-11 AM',
+		'price': '$4.99'
+	}],
+	"BO": [{
+		'cutoff_dow': 3,
+		'cutoff_hour': 21,
+		'dow': 5,
+		'hours': '9-11 AM',
+		'price': '$4.99'
+	}],
+	"pickup": [{
+		'cutoff_dow': 2,
+		'cutoff_hour': 9,
+		'dow': 3,
+		'hours': '3-7 PM',
+		'price': 'Free',
+		'product': 327399525,
+		'variant': 787566377,
+		'title': 'Upper Haight Farmers Market'
+	}, {
+		'cutoff_dow': 5,
+		'cutoff_hour': 9,
+		'dow': 6,
+		'hours': '8 AM-Noon',
+		'price': 'Free',
+		'product': 327399525,
+		'variant': 787566381,
+		'title': 'Downtown Palo Alto Farmers Market'
+	}]
 };
-  // getWindows(referenceTime) -- returns a list of dates and delivery windows
-  // whose cutoff times have not yet passed
-  //
-  // @region: One of {SF, PE, BO} as defined in the global DeliveryWindows variable;
-  // @referenceDate: (optional) an XDate representing when to begin the search
-  //
-  // @returns: an array of {date, delivery_time} objects
+
+
+// getWindows(referenceTime) -- returns a list of dates and delivery windows
+// whose cutoff times have not yet passed
+//
+// @region: One of {SF, PE, BO} as defined in the global DeliveryWindows variable;
+// @referenceDate: (optional) an XDate representing when to begin the search
+//
+// @returns: an array of {date, delivery_time} objects
 function getWindows(region, referenceDate) {
 	referenceDate = (typeof referenceDate === "undefined") ? new XDate() : referenceDate;
 
 	var returnList = new Array();
-		for (var i = 0; i < DeliveryWindows[region].length; i++) {
+	for (var i = 0; i < DeliveryWindows[region].length; i++) {
 		var deliveryDate = referenceDate.clone();
 		if (referenceDate.getDay() == DeliveryWindows[region][i].cutoff_dow) {
 			if (referenceDate.getHours() < DeliveryWindows[region][i].cutoff_hour) {
@@ -46,13 +83,12 @@ function getWindows(region, referenceDate) {
 			} else {
 				daysUntilDOW = (DeliveryWindows[region][i].dow - deliveryDate.getDay() + 7) % 7;
 				deliveryDate.addDays(daysUntilDOW);
-				deliveryDate.addWeeks(1);			// plus a week, because we're past cutoff
+				deliveryDate.addWeeks(1); // plus a week, because we're past cutoff
 			}
 		} else {
-            deliveryDate.addDays(1);	// just need to get to "tomorrow"
+			deliveryDate.addDays(1); // just need to get to "tomorrow"
 			daysUntilDOW = (DeliveryWindows[region][i].dow - deliveryDate.getDay() + 7) % 7;
-          	if (daysUntilDOW == 0)
-              daysUntilDOW = 7;			// make sure it's always a week
+			if (daysUntilDOW == 0) daysUntilDOW = 7; // make sure it's always a week
 			deliveryDate.addDays(daysUntilDOW);
 		}
 
@@ -62,9 +98,9 @@ function getWindows(region, referenceDate) {
 			"date_native": deliveryDate.getTime(),
 			"hours": DeliveryWindows[region][i].hours,
 			"price": DeliveryWindows[region][i].price,
-            "product": DeliveryWindows[region][i].product,
-            "variant": DeliveryWindows[region][i].variant,
-            "title": DeliveryWindows[region][i].title
+			"product": DeliveryWindows[region][i].product,
+			"variant": DeliveryWindows[region][i].variant,
+			"title": DeliveryWindows[region][i].title
 		});
 	}
 
@@ -75,60 +111,56 @@ function getWindows(region, referenceDate) {
 	return (returnList);
 }
 
-  function dateBetween(testDate, testHour, cutoffDate, cutoffHour, deliveryDate, deliveryHour) {
-    if (testDate > cutoffDate || (testDate == cutoffDate && testHour > cutoffHour))
-      if (testDate < deliveryDate || (testDate == deliveryDate && testHour < deliveryHour))
-        return true;
-      
-    return false;
-  }
-  
-  function makeOptions(windowList, selectObject) {
+function dateBetween(testDate, testHour, cutoffDate, cutoffHour, deliveryDate, deliveryHour) {
+	if (testDate > cutoffDate || (testDate == cutoffDate && testHour > cutoffHour)) if (testDate < deliveryDate || (testDate == deliveryDate && testHour < deliveryHour)) return true;
+
+	return false;
+}
+
+function makeOptions(windowList, selectObject) {
 	$.each(windowList, function(index, deliveryWindow) {
-        windowString = deliveryWindow.date + deliveryWindow.hours;
-       	$("<option value='" + windowString + "'" +
-          (deliveryWindow.variant === undefined ? ">" : 
-           "id='" + deliveryWindow.variant + "'>" + deliveryWindow.title + ": ") +
-          windowString + "</option>").appendTo(selectObject);
-      
-      //          Shopify.getProduct('pickup', function(product) {
-      //      var productTitle = product.variants.filter(function(val,index,array){return val.id==variantId})[0].title
-      
+		windowString = deliveryWindow.date + deliveryWindow.hours;
+		$("<option value='" + windowString + "'" + (deliveryWindow.variant === undefined ? ">" : "id='" + deliveryWindow.variant + "'>" + deliveryWindow.title + ": ") + windowString + "</option>").appendTo(selectObject);
+
+		//          Shopify.getProduct('pickup', function(product) {
+		//      var productTitle = product.variants.filter(function(val,index,array){return val.id==variantId})[0].title
 	});
 	if (windowList.length == 1) {
 		windowString = windowList[0].date + windowList[0].hours;
 		selectObject.after("<span>" + windowString + "</span>");
-        selectObject.val(windowString);
+		selectObject.val(windowString);
 		selectObject.hide();
 	}
 }
 
-  function randMax(max) {
-    return Math.floor((Math.random() * max));
-  }
-  
-  
-  function testBetween() {
-      for (var i=0; i<100; i++) {
-    var testDate = randMax(7);
-    var cutoffDate = randMax(7);
-    var deliveryDate = randMax(7);
-    var testHour = randMax(24);
-    var cutoffHour = randMax(24);
-    var deliveryHour = randMax(24);
-    console.log(testDate + ":" + testHour + "," + cutoffDate  + ":" + cutoffHour+ "," + deliveryDate  + ":" + deliveryHour + " - " + dateBetween(testDate, testHour, cutoffDate, cutoffHour, deliveryDate, deliveryHour));
-  }
-  }
-  
+function randMax(max) {
+	return Math.floor((Math.random() * max));
+}
+
+
+function testBetween() {
+	for (var i = 0; i < 100; i++) {
+		var testDate = randMax(7);
+		var cutoffDate = randMax(7);
+		var deliveryDate = randMax(7);
+		var testHour = randMax(24);
+		var cutoffHour = randMax(24);
+		var deliveryHour = randMax(24);
+		console.log(testDate + ":" + testHour + "," + cutoffDate + ":" + cutoffHour + "," + deliveryDate + ":" + deliveryHour + " - " + dateBetween(testDate, testHour, cutoffDate, cutoffHour, deliveryDate, deliveryHour));
+	}
+}
+
 // run a unit test of all hours across seven days
+
+
 function testWindows() {
-  
+
 	for (var date = 1; date < 30; date++) {
 		for (var hour = 0; hour <= 23; hour++) {
 			var referenceDate = new XDate(2014, 2, date, hour); // test month of March (2)
 			var windowList = getWindows("SF", referenceDate);
 			var windowListStr = " - ";
-			for (var i = 0; i < windowList.length; i++)  {
+			for (var i = 0; i < windowList.length; i++) {
 				windowListStr += windowList[i].date.toString("M/dd,");
 			}
 			console.log(referenceDate.toString("ddd MMM dS@HH") + "h - " + windowListStr);
@@ -137,5 +169,5 @@ function testWindows() {
 }
 
 
-  
-</script>
+
+< /script>
