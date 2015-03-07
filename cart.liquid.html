@@ -69,19 +69,20 @@
               <ul style="list-style-type:none;line-height:27px">
                   <li><input checked type='radio' id='region_SF' class='region_radio' name='attributes[region]' value='San Francisco' style="-webkit-appearance:radio;margin-right:.5em"> San Francisco - 
                     <select name='attributes[delivery_date]' id="delivery_date_sf" class="delivery_window_selector"></select></li>
-                  <li><input type='radio' id='region_PE' class='region_radio' name='attributes[region]' value='Peninsula' style="-webkit-appearance:radio;margin-right:.5em"> Peninsula - 
+                  <li style="display:none"><input type='radio' id='region_PE' class='region_radio' name='attributes[region]' value='Peninsula' style="-webkit-appearance:radio;margin-right:.5em"> Peninsula - 
                     <select name='attributes[delivery_date]' id="delivery_date_pe" class="delivery_window_selector" disabled></select></li>
-                  <li><input type='radio' id='region_EB' class='region_radio' name='attributes[region]' value='Berkeley/Oakland' style="-webkit-appearance:radio;margin-right:.5em"> Berkeley/Oakland - 
+                  <li style="display:none"><input type='radio' id='region_EB' class='region_radio' name='attributes[region]' value='Berkeley/Oakland' style="-webkit-appearance:radio;margin-right:.5em"> Berkeley/Oakland - 
                     <select name='attributes[delivery_date]' id="delivery_date_eb" class="delivery_window_selector" disabled></select></li>
-                <!-- 
-                <li><input type='radio' id='pickup' class='region_radio' name='attributes[region]' value='Local Pickup' style="-webkit-appearance:radio;margin-right:.5em"> Free Local Pickup - 
+                 <li style="display:none"><input type='radio' id='pickup' class='region_radio' name='attributes[region]' value='Local Pickup' style="-webkit-appearance:radio;margin-right:.5em"> Free Local Pickup - 
                     <select name='attributes[delivery_date]' id="delivery_date_pickup" class="delivery_window_selector" disabled></select></li>
-                -->             
+                <li style=""><input type='radio' id='shipping' class='region_radio' name='attributes[region]' value='Shipping' style="-webkit-appearance:radio;margin-right:.5em"> 2-Day Shipping - 
+                    <select name='attributes[delivery_date]' id="delivery_date_shipping" class="delivery_window_selector"></select></li>
 	          </ul>
               <script type="text/javascript">makeOptions(getWindows("SF"), $('#delivery_date_sf')); </script>
               <script type="text/javascript">makeOptions(getWindows("PE"), $('#delivery_date_pe')); </script>
               <script type="text/javascript">makeOptions(getWindows("EB"), $('#delivery_date_eb')); </script>
-             <!-- <script type="text/javascript">makeOptions(getWindows("pickup"), $('#delivery_date_pickup')); </script> -->
+              <script type="text/javascript">makeOptions(getWindows("pickup"), $('#delivery_date_pickup'));</script>
+              <script type="text/javascript">makeOptions(getWindows("shipping"), $('#delivery_date_shipping'));</script>
             </p>
         </div>
       
@@ -114,7 +115,27 @@
           // 1. fetch the variant
           // 2. check the minimum order price
           // 3. add variant to cart using AJAX API (http://mayert-douglas4935.myshopify.com/pages/api)
-          	if (regionCode != "pickup") {
+          	if (regionCode == "pickup") { // for PICKUP, add variant based on selected item's TITLE attribute
+				var variantId = $('#delivery_date_pickup option:selected').attr('id');
+				$('#pickup').val($('#delivery_date_pickup option:selected').text());
+				Shopify.addItem(variantId, 1, function (line_item) {
+                  console.log("added local pickup:" + line_item);
+                  $('#cartform').prepend("<input type='hidden' name='updates[]' value='1'>");
+                  $('#cartform').append("<input type='hidden' name='checkout' value='Checkout'>");
+                  $('#cartform').submit();
+          		});
+           	}
+			else if (regionCode == "shipping") {
+				var variantId = $('#delivery_date_shipping option:selected').attr('id');
+				$('#shipping').val($('#delivery_date_shipping option:selected').text());
+				Shopify.addItem(variantId, 1, function (line_item) {
+                  console.log("added shipping:" + line_item);
+                  $('#cartform').prepend("<input type='hidden' name='updates[]' value='1'>");
+                  $('#cartform').append("<input type='hidden' name='checkout' value='Checkout'>");
+                  $('#cartform').submit();
+          		});
+			}
+			else { // (regionCode != "pickup")
               var minimumOrder = variantIds[regionCode].min_order;
               var orderSubtotal = {{ cart.total_price }};
               if (orderSubtotal < minimumOrder) {
@@ -130,17 +151,6 @@
                   $('#cartform').submit();
               });
         	}
-            else { // for PICKUP, add variant based on selected item's TITLE attribute
-              var variantId = $('#delivery_date_pickup option:selected').attr('id');
-          		$('#pickup').val($('#delivery_date_pickup option:selected').text());
-              Shopify.addItem(variantId, 1, function (line_item) {
-                  console.log("added local pickup:" + line_item);
-                  $('#cartform').prepend("<input type='hidden' name='updates[]' value='1'>");
-                  $('#cartform').append("<input type='hidden' name='checkout' value='Checkout'>");
-                  $('#cartform').submit();
-
-          });
-           }
         });
           
           // disable the drop downs for unselected region
@@ -190,6 +200,4 @@
 
   </div>
   <!-- End cart -->
-</div> 
- 
-
+</div>

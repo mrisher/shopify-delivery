@@ -12,21 +12,21 @@ var DeliveryWindows = {
 		'cutoff_dow': 0,
 		'cutoff_hour': 21,
 		'dow': 1,
-		'hours': '6-8 PM',
+      'hours': '6:30 - 9:30 PM',
 		'price': '$4.99'
 	}, {
 		'cutoff_dow': 0,
 		'cutoff_hour': 21,
 		'dow': 2,
-		'hours': '9-11 AM',
+      'hours': '8:30 AM - 12:30 PM',
 		'price': '$4.99'
 	}, {
 		'cutoff_dow': 3,
 		'cutoff_hour': 21,
 		'dow': 5,
-		'hours': '9-11 AM',
+		'hours': '8:30 AM - 12:30 PM',
 		'price': '$4.99'
-	}],
+    }],
 	"PE": [{
 		'cutoff_dow': 0,
 		'cutoff_hour': 21,
@@ -42,14 +42,14 @@ var DeliveryWindows = {
 		'price': '$4.99'
 	}],
 	"pickup": [{
-		'cutoff_dow': 2,
-		'cutoff_hour': 9,
-		'dow': 3,
-		'hours': '3-7 PM',
+		'cutoff_dow': 0,
+		'cutoff_hour': 21,
+		'dow': 8,
+		'hours': '4-6 PM',
 		'price': 'Free',
 		'product': 327399525,
-		'variant': 787566377,
-		'title': 'Upper Haight Farmers Market'
+		'variant': 909212649,
+		'title': 'Presidio Knolls School (for PKS community only)'
 	}, {
 		'cutoff_dow': 5,
 		'cutoff_hour': 9,
@@ -59,7 +59,27 @@ var DeliveryWindows = {
 		'product': 327399525,
 		'variant': 787566381,
 		'title': 'Downtown Palo Alto Farmers Market'
-	}]
+	}],
+  "shipping": [{
+        'cutoff_dow': 0,
+		'cutoff_hour': 18,
+		'dow': 3,
+		'hours': '', 
+		'price': '18.00',
+		'product': 441096728,
+		'variant': 1213987804,
+		'title': 'California (outside Bay Area)'
+  },
+              {
+        'cutoff_dow': 0,
+		'cutoff_hour': 18,
+		'dow': 3,
+		'hours': '', 
+		'price': '28.00',
+		'product': 441096728,
+		'variant': 1213990852,
+		'title': 'Nationwide'
+  }]
 };
 
 
@@ -121,12 +141,11 @@ function makeOptions(windowList, selectObject) {
 	$.each(windowList, function(index, deliveryWindow) {
 		windowString = deliveryWindow.date + deliveryWindow.hours;
 		$("<option value='" + windowString + "'" + (deliveryWindow.variant === undefined ? ">" : "id='" + deliveryWindow.variant + "'>" + deliveryWindow.title + ": ") + windowString + "</option>").appendTo(selectObject);
-
-		//          Shopify.getProduct('pickup', function(product) {
-		//      var productTitle = product.variants.filter(function(val,index,array){return val.id==variantId})[0].title
 	});
 	if (windowList.length == 1) {
 		windowString = windowList[0].date + windowList[0].hours;
+		if (windowList[0].title)
+			windowString = windowList[0].title + " - " + windowString;
 		selectObject.after("<span>" + windowString + "</span>");
 		selectObject.val(windowString);
 		selectObject.hide();
