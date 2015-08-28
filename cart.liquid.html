@@ -69,14 +69,16 @@
               <ul style="list-style-type:none;line-height:27px">
                   <li><input checked type='radio' id='region_SF' class='region_radio' name='attributes[region]' value='San Francisco' style="-webkit-appearance:radio;margin-right:.5em"> San Francisco - 
                     <select name='attributes[delivery_date]' id="delivery_date_sf" class="delivery_window_selector"></select></li>
-                  <li style="display:none"><input type='radio' id='region_PE' class='region_radio' name='attributes[region]' value='Peninsula' style="-webkit-appearance:radio;margin-right:.5em"> Peninsula - 
+                  <li><input type='radio' id='region_PE' class='region_radio' name='attributes[region]' value='the Peninsula' style="-webkit-appearance:radio;margin-right:.5em"> Peninsula (Palo Alto and points north) - 
                     <select name='attributes[delivery_date]' id="delivery_date_pe" class="delivery_window_selector" disabled></select></li>
-                  <li style="display:none"><input type='radio' id='region_EB' class='region_radio' name='attributes[region]' value='Berkeley/Oakland' style="-webkit-appearance:radio;margin-right:.5em"> Berkeley/Oakland - 
+                  <li><input type='radio' id='region_EB' class='region_radio' name='attributes[region]' value='the East Bay' style="-webkit-appearance:radio;margin-right:.5em"> East Bay (Emeryville, Oakland, Berkeley) - 
                     <select name='attributes[delivery_date]' id="delivery_date_eb" class="delivery_window_selector" disabled></select></li>
                  <li style="display:none"><input type='radio' id='pickup' class='region_radio' name='attributes[region]' value='Local Pickup' style="-webkit-appearance:radio;margin-right:.5em"> Free Local Pickup - 
                     <select name='attributes[delivery_date]' id="delivery_date_pickup" class="delivery_window_selector" disabled></select></li>
                 <li style=""><input type='radio' id='shipping' class='region_radio' name='attributes[region]' value='Shipping' style="-webkit-appearance:radio;margin-right:.5em"> 2-Day Shipping - 
                     <select name='attributes[delivery_date]' id="delivery_date_shipping" class="delivery_window_selector" disabled></select></li>
+				<li style="width:40em; line-height:normal; margin-top:1em">For additional Bay Area Locations, our friends at Good Eggs will take
+					great care of you!  Visit <a href="http://www.goodeggs.com/sprogsfresh">www.goodeggs.com/sprogsfresh</a></li>
 	          </ul>
               <script type="text/javascript">makeOptions(getWindows("SF"), $('#delivery_date_sf')); </script>
               <script type="text/javascript">makeOptions(getWindows("PE"), $('#delivery_date_pe')); </script>
@@ -101,11 +103,11 @@
                 },
                 'region_PE': {
                     'variant_id': 578896309,
-                    min_order: 1000
+                    min_order: 2000
                 },
                 'region_EB': {
-                    'variant_id': 578896445,
-                    min_order: 1000
+                    'variant_id': 4744318341,
+                    min_order: 2000
                 }
             };
           

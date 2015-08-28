@@ -10,43 +10,62 @@
 var DeliveryWindows = {
 	"SF": [{
 		'cutoff_dow': 0,
-		'cutoff_hour': 21,
+		'cutoff_hour': 9,
 		'dow': 1,
-      'hours': '6:30 - 9:30 PM',
-		'price': '$4.99'
-	}, {
+		'hours': '8:00 AM - 12:00 PM'
+	}, 
+	{
 		'cutoff_dow': 0,
-		'cutoff_hour': 21,
+		'cutoff_hour': 9,
+		'dow': 1,
+		'hours': '5:00 PM - 9:00 PM'
+	},{
+		'cutoff_dow': 1,
+		'cutoff_hour': 9,
 		'dow': 2,
-      'hours': '8:30 AM - 12:30 PM',
-		'price': '$4.99'
-	}, {
+		'hours': '5:00 PM - 9:00 PM'
+    },
+	{
+		'cutoff_dow': 2,
+		'cutoff_hour': 9,
+		'dow': 3,
+		'hours': '8:00 AM - 12:00 PM'
+    },
+	{
+		'cutoff_dow': 2,
+		'cutoff_hour': 9,
+		'dow': 3,
+		'hours': '5:00 PM - 9:00 PM'
+    },
+	{
 		'cutoff_dow': 3,
-		'cutoff_hour': 21,
+		'cutoff_hour': 9,
+		'dow': 4,
+		'hours': '5:00 PM - 9:00 PM'
+    },
+	{
+		'cutoff_dow': 4,
+		'cutoff_hour': 9,
 		'dow': 5,
-		'hours': '8:30 AM - 12:30 PM',
-		'price': '$4.99'
+		'hours': '8:00 AM - 12:00 PM'
     }],
 	"PE": [{
 		'cutoff_dow': 0,
-		'cutoff_hour': 21,
-		'dow': 2,
-		'hours': '9-11 AM',
-		'price': '$4.99'
+		'cutoff_hour': 9,
+		'dow': 1,
+		'hours': '8:00 AM - 12:00 PM'
 	}],
 	"EB": [{
-		'cutoff_dow': 3,
-		'cutoff_hour': 21,
-		'dow': 5,
-		'hours': '9-11 AM',
-		'price': '$4.99'
+		'cutoff_dow': 0,
+		'cutoff_hour': 9,
+		'dow': 1,
+		'hours': '8:00 AM - 12:00 PM'
 	}],
 	"pickup": [{
 		'cutoff_dow': 0,
 		'cutoff_hour': 21,
 		'dow': 8,
 		'hours': '4-6 PM',
-		'price': 'Free',
 		'product': 327399525,
 		'variant': 909212649,
 		'title': 'Presidio Knolls School (for PKS community only)'
@@ -55,27 +74,24 @@ var DeliveryWindows = {
 		'cutoff_hour': 9,
 		'dow': 6,
 		'hours': '8 AM-Noon',
-		'price': 'Free',
 		'product': 327399525,
 		'variant': 787566381,
 		'title': 'Downtown Palo Alto Farmers Market'
 	}],
   "shipping": [{
         'cutoff_dow': 0,
-		'cutoff_hour': 18,
-		'dow': 3,
+		'cutoff_hour': 21,
+		'dow': 4,
 		'hours': '', 
-		'price': '18.00',
 		'product': 441096728,
 		'variant': 1213987804,
 		'title': 'California (outside Bay Area)'
   },
               {
         'cutoff_dow': 0,
-		'cutoff_hour': 18,
-		'dow': 3,
+		'cutoff_hour': 21,
+		'dow': 4,
 		'hours': '', 
-		'price': '28.00',
 		'product': 441096728,
 		'variant': 1213990852,
 		'title': 'Nationwide'
