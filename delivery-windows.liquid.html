@@ -181,7 +181,7 @@ function testBetween() {
 		var testHour = randMax(24);
 		var cutoffHour = randMax(24);
 		var deliveryHour = randMax(24);
-		console.log(testDate + ":" + testHour + "," + cutoffDate + ":" + cutoffHour + "," + deliveryDate + ":" + deliveryHour + " - " + dateBetween(testDate, testHour, cutoffDate, cutoffHour, deliveryDate, deliveryHour));
+////////		console.log(testDate + ":" + testHour + "," + cutoffDate + ":" + cutoffHour + "," + deliveryDate + ":" + deliveryHour + " - " + dateBetween(testDate, testHour, cutoffDate, cutoffHour, deliveryDate, deliveryHour));
 	}
 }
 
@@ -198,7 +198,7 @@ function testWindows() {
 			for (var i = 0; i < windowList.length; i++) {
 				windowListStr += windowList[i].date.toString("M/dd,");
 			}
-			console.log(referenceDate.toString("ddd MMM dS@HH") + "h - " + windowListStr);
+////////			console.log(referenceDate.toString("ddd MMM dS@HH") + "h - " + windowListStr);
 		}
 	}
 }

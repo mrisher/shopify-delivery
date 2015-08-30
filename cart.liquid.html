@@ -1,4 +1,4 @@
-<div id="cart">
+<div id="cart" style="display:none">
   
   <!-- Begin empty cart -->
   {% if cart.item_count == 0 %}
@@ -95,22 +95,51 @@
         </div>
         
         <script type="text/javascript">
+		var variantIds = {
+            'region_SF': {
+                'variant_id': 578896077,
+                min_order: 1000
+            },
+            'region_PE': {
+                'variant_id': 578896309,
+                min_order: 2000
+            },
+            'region_EB': {
+                'variant_id': 4744318341,
+                min_order: 2000
+            },
+			'shipping_1': {
+				'variant_id':1213987804
+			},
+			'shipping_2': {
+				'variant_id':1213990852
+			}
+        };
+
+		$(document).ready(function() {
+			// disable cart update notifications
+			Shopify.onCartUpdate = function(t) {};
+
+			// remove any existing shipping things so we don't have duplicates
+			var dirty = false;
+			$.each(variantIds, function(index, value) {
+				var variantId = value.variant_id;
+				if ($("#updates_" + variantId).length > 0) {			// if it exists
+					console.log('removing variant ' + variantId);
+					$("#updates_" + variantId).val(0);
+					dirty = true;
+				}
+			});
+			
+			if (dirty) {
+              	$('#cartform').submit();
+///				location.reload();		// refresh the cart
+			}
+			else
+				$('div#cart').show();
+		});
+
         $('#checkout').click(function (event) {
-            var variantIds = {
-                'region_SF': {
-                    'variant_id': 578896077,
-                    min_order: 1000
-                },
-                'region_PE': {
-                    'variant_id': 578896309,
-                    min_order: 2000
-                },
-                'region_EB': {
-                    'variant_id': 4744318341,
-                    min_order: 2000
-                }
-            };
-          
             var regionCode = $('input[name="attributes[region]"]:checked', '#cartform').attr('id');
 
           // for standard regions:
